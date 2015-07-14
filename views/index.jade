@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  div.smallBox
+    h1= title
+    p Welcome to #{para}
+    form(action = "/signup", method ="POST")
+      label(for="uname") Username:
+        input(type = "text", name = "uname", id = "uname", placeholder = "Enter Username", required)
+      label(for="pass") Password:
+        input(type = "password", name = "pass", id = "pass", placeholder = "Enter Password", required)
+      input(type = "submit", value = "Signup", id = "submit")
+    p(id = "password-strength")
+    script(src = "/scripts/jquery.js")
+    script(src = "/scripts/bloomfilter.js")
+    script.
+      $(document).ready(function(){
+        var bloom;
+        var bool = true;
+        $.ajax({
+          method: 'GET',
+          dataType: 'json',
+          url: '/scripts/bloomdata.js',
+          error: function (jqxhr, status, err) { alert(status + ' ERROR ' + err); }
+        }).done(function(res){
+          bloom = new BloomFilter(res, 8);
+
+        });
+        $('#submit').click(function (e) {
+          e.preventDefault();
+          bool = bloom.test($('#pass').val());
+          if (! bool) {
+            $("#password-strength").text("Your password is reasonably strong");
+          } else {
+            $("#password-strength").text("Your password is a commonly used password, please use a stronger password");
+          }
+        });
+        /*$.ajax({
+          'url' : '/verify',
+          'method': 'POST',
+          'data': {
+            'secret' : '#{secret}',
+            'code' : $('#code').val()
+          }
+        }).done(function(result){
+          if(result == "true"){
+            // the codes matched, so display a success message, and redirect to the regular sync flow.
+            // for now, hide the controls, but redirect using backbone in the real one
+          }
+          else{
+          }
+        });*/
+      });
+
+
