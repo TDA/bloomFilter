@@ -9,47 +9,48 @@ block content
         input(type = "text", name = "uname", id = "uname", placeholder = "Enter Username", required)
       label(for="pass") Password:
         input(type = "password", name = "pass", id = "pass", placeholder = "Enter Password", required)
+        p (Please select a password of atleast length 8 containing atleast one alphabet and one number)
       input(type = "submit", value = "Signup", id = "submit")
     p(id = "password-strength")
     script(src = "/scripts/jquery.js")
     script(src = "/scripts/bloomfilter.js")
     script.
+      function strength_check(password) {
+        // Check for passwords that atleast contain a number and an alphabet
+        var regex = new RegExp('((?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_+ ]{8,})');
+        return regex.test(password);
+      }
       $(document).ready(function(){
         var bloom;
         var bool = true;
+        var strong = false;
         $.ajax({
           method: 'GET',
           dataType: 'json',
-          url: '/scripts/bloomdata.js',
+          url: '/scripts/bloomdata_ext_pwd.js',
           error: function (jqxhr, status, err) { alert(status + ' ERROR ' + err); }
         }).done(function(res){
           bloom = new BloomFilter(res, 8);
 
         });
         $('#submit').click(function (e) {
+          var password = $('#pass').val();
           e.preventDefault();
-          bool = bloom.test($('#pass').val());
+          strong = strength_check(password.toString());
+          if (strong) {
+            // Only if the password has a chance of being strong do we check with the bloom filter
+            // else, simply reject the password. This helps us to not store all-alpha or all-numeric passwords
+            // on the bloom filter, reducing space.
+            bool = bloom.test(password);
+          } else {
+            alert('password aint strong!');
+          }
           if (! bool) {
             $("#password-strength").text("Your password is reasonably strong");
           } else {
             $("#password-strength").text("Your password is a commonly used password, please use a stronger password");
           }
         });
-        /*$.ajax({
-          'url' : '/verify',
-          'method': 'POST',
-          'data': {
-            'secret' : '#{secret}',
-            'code' : $('#code').val()
-          }
-        }).done(function(result){
-          if(result == "true"){
-            // the codes matched, so display a success message, and redirect to the regular sync flow.
-            // for now, hide the controls, but redirect using backbone in the real one
-          }
-          else{
-          }
-        });*/
       });
 
 
