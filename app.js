@@ -68,10 +68,10 @@ app.get('/signup', function(req, res) {
 
 app.get('/verify', function(req, res){
   var bloom = new bf.BloomFilter(
-    10 * 545120, // number of bits to allocate.
+    10 * 54000, // number of bits to allocate.
     8        // number of hash functions.
   );
-  fs.readFile('common_passwords.txt', 'utf8', function (err,data) {
+  fs.readFile('human-ans-shorter.txt', 'utf8', function (err,data) {
     if (err) {
       return console.log(err);
     }
@@ -81,7 +81,7 @@ app.get('/verify', function(req, res){
     });
     var array = [].slice.call(bloom.buckets),
       json = JSON.stringify(array);
-    fs.writeFile('public/scripts/bloomdata_ext_pwd.js',json);
+    fs.writeFile('public/scripts/bloomdata_short_pwd.js',json);
   });
 
   res.end("alls well that ends well :P");

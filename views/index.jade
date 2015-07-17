@@ -16,8 +16,9 @@ block content
     script(src = "/scripts/bloomfilter.js")
     script.
       function strength_check(password) {
-        // Check for passwords that atleast contain a number and an alphabet
-        var regex = new RegExp('((?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_+ ]{8,})');
+        // Check for passwords that atleast contain a number and an alphabet,
+        // or if alphabets, then atleast 12 characters long
+        var regex = new RegExp('((?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_+ ]{8,12})|([A-Za-z0-9!@#$%^&*()_+ ]{12,})');
         return regex.test(password);
       }
       $(document).ready(function(){
@@ -32,7 +33,7 @@ block content
         }).done(function(res){
           bloom = new BloomFilter(res, 8);
 
-        });
+        });/*
         $('#submit').click(function (e) {
           var password = $('#pass').val();
           e.preventDefault();
@@ -43,6 +44,26 @@ block content
             // on the bloom filter, reducing space.
             bool = bloom.test(password);
           } else {
+            bool = true;
+            alert('password aint strong!');
+          }
+          if (! bool) {
+            $("#password-strength").text("Your password is reasonably strong");
+          } else {
+            $("#password-strength").text("Your password is a commonly used password, please use a stronger password");
+          }
+        });*/
+        $('#submit').click(function (e) {
+          var password = $('#pass').val();
+          e.preventDefault();
+          strong = strength_check(password.toString());
+          if (strong) {
+            // Only if the password has a chance of being strong do we check with the bloom filter
+            // else, simply reject the password. This helps us to not store all-alpha or all-numeric passwords
+            // on the bloom filter, reducing space.
+            bool = bloom.test(password);
+          } else {
+            bool = true;
             alert('password aint strong!');
           }
           if (! bool) {
