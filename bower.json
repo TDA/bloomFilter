@@ -1,0 +1,27 @@
+{
+  "name": "fxa-bloom-filter",
+  "main": "src/bloomfilter.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/mozilla/fxa-bloom-filter",
+  "authors": [
+    "Sai Pc"
+  ],
+  "description": "Bloom Filter for Password Strength Checking",
+  "keywords": [
+    "BloomFilter",
+    "password"
+  ],
+  "license": "MPL-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "mocha": "2.2.5",
+    "chai": "3.2.0",
+    "sinon": "1.15.4"
+  }
+}

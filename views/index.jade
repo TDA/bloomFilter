@@ -28,7 +28,7 @@ block content
         $.ajax({
           method: 'GET',
           dataType: 'json',
-          url: '/scripts/bloomdata_ext_pwd.js',
+          url: '/scripts/bloomdata_short_pwd.js',
           error: function (jqxhr, status, err) { alert(status + ' ERROR ' + err); }
         }).done(function(res){
           bloom = new BloomFilter(res, 8);
